@@ -91,7 +91,17 @@ namespace XMock
         {
             _references[collectionId].CollectionFixtures.Clear();
         }
+
         #endregion
+
+        public bool TryRemoveCollectionReferences(Guid collectionId)
+        {
+            // if the collection reference does not have any fixtures then remove it
+            var collectionReference = _references[collectionId];
+            if (collectionReference.ClassFixtures.Count == 0 && collectionReference.CollectionFixtures.Count == 0)
+                return _references.Remove(collectionId);
+            return false;
+        }
 
         [DebuggerDisplay("{Usages} usages, {CollectionFixtures.Count} collection fixtures, {ClassFixtures.Count} class fixtures")]
         private class CollectionReference
