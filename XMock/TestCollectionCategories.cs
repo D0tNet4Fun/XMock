@@ -8,6 +8,13 @@ namespace XMock
 {
     internal class TestCollectionCategories
     {
+        private readonly SharedContext _sharedContext;
+
+        public TestCollectionCategories(SharedContext sharedContext)
+        {
+            _sharedContext = sharedContext;
+        }
+
         public List<TestCollection> TypemockPragmaticCollections { get; } = new List<TestCollection>();
         public List<TestCollection> TypemockInterfaceOnlyCollections { get; } = new List<TestCollection>();
         public List<TestCollection> OtherCollections { get; } = new List<TestCollection>();
@@ -34,7 +41,10 @@ namespace XMock
             {
                 collection = new TestCollection(testCollection);
                 targetCollections.Add(collection);
+                // add usage on the shared context for the collection
+                _sharedContext.AddGlobalUsage(testCollection.UniqueID);
             }
+
             collection.TestCases.AddRange(testCases);
         }
 

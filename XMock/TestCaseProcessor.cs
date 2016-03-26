@@ -10,15 +10,17 @@ namespace XMock
     internal class TestCaseProcessor
     {
         private readonly IEnumerable<IXunitTestCase> _testCases;
+        private readonly SharedContext _sharedContext;
 
-        public TestCaseProcessor(IEnumerable<IXunitTestCase> testCases)
+        public TestCaseProcessor(IEnumerable<IXunitTestCase> testCases, SharedContext sharedContext)
         {
             _testCases = testCases;
+            _sharedContext = sharedContext;
         }
 
         public TestCollectionCategories Run(CancellationToken cancellationToken)
         {
-            var result = new TestCollectionCategories();
+            var result = new TestCollectionCategories(_sharedContext);
 
             var collectionComparer = new TestCollectionComparer();
             var classComparer = new TestClassComparer();

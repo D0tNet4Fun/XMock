@@ -17,7 +17,7 @@ namespace XMock.Runners
         {
             var testAssembly = new TestAssembly(AssemblyInfo, AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
-            using (var assemblyRunner = new TestAssemblyRunner(testAssembly, testCases, DiagnosticMessageSink, executionMessageSink, executionOptions))
+            using (var assemblyRunner = new TestAssemblyRunner(testAssembly, testCases, DiagnosticMessageSink, executionMessageSink, executionOptions, new SharedContext()))
                 await assemblyRunner.RunAsync();
         }
     }

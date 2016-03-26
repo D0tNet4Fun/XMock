@@ -58,6 +58,7 @@
     </Compile>
     <Compile Include="Runners\TestClassRunner.cs" />
     <Compile Include="Runners\TestCollectionRunner.cs" />
+    <Compile Include="SharedContext.cs" />
     <Compile Include="TestCaseProcessor.cs" />
     <Compile Include="TestCollection.cs" />
     <Compile Include="TestCollectionCategories.cs" />

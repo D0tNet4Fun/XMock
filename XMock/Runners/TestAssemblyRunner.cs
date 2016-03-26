@@ -10,9 +10,13 @@ namespace XMock.Runners
 {
     public partial class TestAssemblyRunner : XunitTestAssemblyRunner
     {
-        public TestAssemblyRunner(ITestAssembly testAssembly, IEnumerable<IXunitTestCase> testCases, IMessageSink diagnosticMessageSink, IMessageSink executionMessageSink, ITestFrameworkExecutionOptions executionOptions)
+        private readonly SharedContext _sharedContext;
+
+        public TestAssemblyRunner(ITestAssembly testAssembly, IEnumerable<IXunitTestCase> testCases, IMessageSink diagnosticMessageSink, IMessageSink executionMessageSink, ITestFrameworkExecutionOptions executionOptions,
+            SharedContext sharedContext)
             : base(testAssembly, testCases, diagnosticMessageSink, executionMessageSink, executionOptions)
         {
+            _sharedContext = sharedContext;
         }
 
         protected override string GetTestFrameworkDisplayName()
@@ -27,7 +31,7 @@ namespace XMock.Runners
             TestCollectionCategories testCollectionCategories;
             try
             {
-                testCollectionCategories = new TestCaseProcessor(TestCases).Run(cancellationTokenSource.Token);
+                testCollectionCategories = new TestCaseProcessor(TestCases, _sharedContext).Run(cancellationTokenSource.Token);
             }
             catch (Exception e)
             {
@@ -141,7 +145,7 @@ namespace XMock.Runners
 
         protected override Task<RunSummary> RunTestCollectionAsync(IMessageBus messageBus, ITestCollection testCollection, IEnumerable<IXunitTestCase> testCases, CancellationTokenSource cancellationTokenSource)
         {
-            return new TestCollectionRunner(testCollection, testCases, DiagnosticMessageSink, messageBus, TestCaseOrderer, new ExceptionAggregator(Aggregator), cancellationTokenSource).RunAsync();
+            return new TestCollectionRunner(testCollection, testCases, DiagnosticMessageSink, messageBus, TestCaseOrderer, new ExceptionAggregator(Aggregator), cancellationTokenSource, _sharedContext).RunAsync();
         }
     }
 }
