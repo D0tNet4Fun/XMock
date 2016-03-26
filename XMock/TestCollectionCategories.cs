@@ -19,23 +19,26 @@ namespace XMock
         public List<TestCollection> TypemockInterfaceOnlyCollections { get; } = new List<TestCollection>();
         public List<TestCollection> OtherCollections { get; } = new List<TestCollection>();
 
-        public void AddTypemockPragmaticTestCases(IEnumerable<IXunitTestCase> testCases, ITestCollection testCollection)
+        public void AddTypemockPragmaticTestCases(ICollection<IXunitTestCase> testCases, ITestCollection testCollection)
         {
             AddTestCases(testCases, testCollection, TypemockPragmaticCollections);
         }
 
-        public void AddTypemockInterfaceOnlyTestCases(IEnumerable<IXunitTestCase> testCases, ITestCollection testCollection)
+        public void AddTypemockInterfaceOnlyTestCases(ICollection<IXunitTestCase> testCases, ITestCollection testCollection)
         {
             AddTestCases(testCases, testCollection, TypemockInterfaceOnlyCollections);
         }
 
-        public void AddOtherTestCases(IEnumerable<IXunitTestCase> testCases, ITestCollection testCollection)
+        public void AddOtherTestCases(ICollection<IXunitTestCase> testCases, ITestCollection testCollection)
         {
             AddTestCases(testCases, testCollection, OtherCollections);
         }
 
-        private void AddTestCases(IEnumerable<IXunitTestCase> testCases, ITestCollection testCollection, ICollection<TestCollection> targetCollections)
+        private void AddTestCases(ICollection<IXunitTestCase> testCases, ITestCollection testCollection, ICollection<TestCollection> targetCollections)
         {
+            if (testCases.Count == 0)
+                return;
+
             var collection = targetCollections.SingleOrDefault(c => c.Unwrap().UniqueID == testCollection.UniqueID);
             if (collection == null)
             {

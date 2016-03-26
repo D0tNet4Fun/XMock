@@ -27,6 +27,7 @@ namespace XMock
                 throw new InvalidOperationException($"Collection {collectionId} is not in use anymore");
         }
 
+        #region Class fixtures
         public void CacheClassFixture(Guid collectionId, Type fixtureType, object instance)
         {
             var collectionReference = _references[collectionId];
@@ -57,6 +58,40 @@ namespace XMock
         {
             _references[collectionId].ClassFixtures.Clear();
         }
+        #endregion
+
+        #region Collection fixtures
+        public void CacheCollectionFixture(Guid collectionId, Type fixtureType, object instance)
+        {
+            var collectionReference = _references[collectionId];
+            collectionReference.CollectionFixtures.Add(fixtureType, new CollectionReference.Fixture(collectionReference) { Value = instance });
+        }
+
+        public object GetCollectionFixture(Guid collectionId, Type fixtureType)
+        {
+            CollectionReference.Fixture fixture;
+            return _references[collectionId].CollectionFixtures.TryGetValue(fixtureType, out fixture) ? fixture.Value : null;
+        }
+
+        public void AddCollectionFixtureUsage(Guid collectionId, Type fixtureType)
+        {
+            _references[collectionId].CollectionFixtures[fixtureType].Usages++;
+        }
+
+        public int GetCollectionFixturesUsagesLeft(Guid collectionId)
+        {
+            var collectionReference = _references[collectionId];
+            var result = collectionReference.Usages * collectionReference.CollectionFixtures.Count - collectionReference.CollectionFixtures.Values.Sum(f => f.Usages);
+            if (result < 0)
+                throw new InvalidOperationException($"Collection {collectionId} is used more than expected");
+            return result;
+        }
+
+        public void ClearCollectionFixtures(Guid collectionId)
+        {
+            _references[collectionId].CollectionFixtures.Clear();
+        }
+        #endregion
 
         [DebuggerDisplay("{Usages} usages, {CollectionFixtures.Count} collection fixtures, {ClassFixtures.Count} class fixtures")]
         private class CollectionReference
@@ -64,6 +99,7 @@ namespace XMock
             public int Usages { get; set; }
 
             public Dictionary<Type, Fixture> ClassFixtures { get; } = new Dictionary<Type, Fixture>();
+            public Dictionary<Type, Fixture> CollectionFixtures { get; } = new Dictionary<Type, Fixture>();
 
             public class Fixture
             {
