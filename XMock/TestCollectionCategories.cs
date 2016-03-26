@@ -37,5 +37,14 @@ namespace XMock
             }
             collection.TestCases.AddRange(testCases);
         }
+
+        public void OrderCollections(ITestCollectionOrderer testCollectionOrderer)
+        {
+            var orderer = new TestCollectionOrderer(testCollectionOrderer);
+            foreach (var collection in new[] { TypemockPragmaticCollections, TypemockInterfaceOnlyCollections, OtherCollections })
+            {
+                orderer.Order(collection);
+            }
+        }
     }
 }

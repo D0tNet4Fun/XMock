@@ -34,6 +34,15 @@ namespace XMock.Runners
                 DiagnosticMessageSink.OnMessage(new DiagnosticMessage($"Test case processor threw exception: {e}"));
                 return new RunSummary();
             }
+            try
+            {
+                testCollectionCategories.OrderCollections(TestCollectionOrderer);
+            }
+            catch (Exception e)
+            {
+                DiagnosticMessageSink.OnMessage(new DiagnosticMessage($"Test collection orderer threw exception: {e}"));
+                return new RunSummary();
+            }
 
             var summaries = new List<RunSummary>();
             RunSummary summary;

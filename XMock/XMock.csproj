@@ -61,6 +61,7 @@
     <Compile Include="TestCaseProcessor.cs" />
     <Compile Include="TestCollection.cs" />
     <Compile Include="TestCollectionCategories.cs" />
+    <Compile Include="TestCollectionOrderer.cs" />
     <Compile Include="TypemockHelper.cs" />
     <Compile Include="XMockTestFramework.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
