@@ -41,6 +41,24 @@ namespace XMock.Runners
             }
         }
 
+        protected override async Task<RunSummary> RunTestMethodAsync(ITestMethod testMethod, IReflectionMethodInfo method, IEnumerable<IXunitTestCase> testCases, object[] constructorArguments)
+        {
+            var runSummary = await base.RunTestMethodAsync(testMethod, method, testCases, constructorArguments);
+            if (Aggregator.HasExceptions)
+            {
+                var ex = Aggregator.ToException();
+                if (ex is TestClassException && TestClass.TestCollection.CollectionDefinition == null)
+                {
+                    DiagnosticMessageSink.OnMessage(new DiagnosticMessage(
+                        $"Error running test method \"{testMethod.Method.Name}\" in class \"{TestClass.Class.Name}\". " +
+                        "The class instance could not be created because the constructor arguments could not be resolved. " +
+                        "This happens when the XMock configuration specifies a Typemock collection definition, the class is not part of a user-defined collection and it contains both Typemock tests and other tests. " +
+                        "To workaround this, either move the other tests to a different class or do not use constructor arguments."));
+                }
+            }
+            return runSummary;
+        }
+
         protected override async Task BeforeTestClassFinishedAsync()
         {
             lock (_sharedContext)

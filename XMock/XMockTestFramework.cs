@@ -5,6 +5,9 @@ using Xunit.Sdk;
 
 namespace XMock
 {
+    /// <summary>
+    /// Implements a custom test framework executor which prioritizes Typemock tests and runs them synchronously.
+    /// </summary>
     public class XMockTestFramework : XunitTestFramework
     {
         public XMockTestFramework(IMessageSink diagnosticMessageSink)
