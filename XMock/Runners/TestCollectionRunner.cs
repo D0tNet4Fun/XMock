@@ -57,8 +57,13 @@ namespace XMock.Runners
                 {
                     // remove the collection fixtures from the shared context and let the base class dispose them
                     _sharedContext.ClearCollectionFixtures(CollectionId);
-                    // try to remove all references of the collection from the shared context
-                    _sharedContext.TryRemoveCollectionReferences(CollectionId);
+                }
+
+                // remove all references of the collection from the shared context if it is not in use anymore
+                count = _sharedContext.RemoveCollectionReference(CollectionId);
+                if (count == 0)
+                {
+                    _sharedContext.RemoveCollectionReferences(CollectionId);
                 }
             }
             await base.BeforeTestCollectionFinishedAsync();

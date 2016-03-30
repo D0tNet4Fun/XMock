@@ -44,8 +44,8 @@ namespace XMock
             {
                 collection = new TestCollection(testCollection);
                 targetCollections.Add(collection);
-                // add usage on the shared context for the collection
-                _sharedContext.AddGlobalUsage(testCollection.UniqueID);
+                // add a reference on the shared context for the collection
+                _sharedContext.AddCollectionReference(testCollection.UniqueID);
             }
 
             collection.TestCases.AddRange(testCases);

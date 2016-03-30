@@ -14,7 +14,7 @@ namespace XMock
             _references = new Dictionary<Guid, CollectionReference>();
         }
 
-        public void AddGlobalUsage(Guid collectionId)
+        public void AddCollectionReference(Guid collectionId)
         {
             CollectionReference collectionReference;
             if (!_references.TryGetValue(collectionId, out collectionReference))
@@ -22,9 +22,23 @@ namespace XMock
                 collectionReference = new CollectionReference();
                 _references.Add(collectionId, collectionReference);
             }
-            var value = ++collectionReference.Usages;
-            if (value <= 0)
-                throw new InvalidOperationException($"Collection {collectionId} is not in use anymore");
+            collectionReference.Usages++;
+        }
+
+        public int RemoveCollectionReference(Guid collectionId)
+        {
+            var usages = --_references[collectionId].Usages;
+            if (usages < 0)
+                throw new InvalidOperationException($"Collection {collectionId} was already not referenced anymore.");
+            return usages;
+        }
+
+        public bool RemoveCollectionReferences(Guid collectionId)
+        {
+            var collectionReference = _references[collectionId];
+            if (collectionReference.ClassFixtures.Count != 0 || collectionReference.CollectionFixtures.Count != 0)
+                throw new InvalidOperationException($"Collection {collectionId} cannot be removed because it has fixtures");
+            return _references.Remove(collectionId);
         }
 
         #region Class fixtures
@@ -83,7 +97,7 @@ namespace XMock
             var collectionReference = _references[collectionId];
             var result = collectionReference.Usages * collectionReference.CollectionFixtures.Count - collectionReference.CollectionFixtures.Values.Sum(f => f.Usages);
             if (result < 0)
-                throw new InvalidOperationException($"Collection {collectionId} is used more than expected");
+                throw new InvalidOperationException($"Collection {collectionId} has been used more than expected");
             return result;
         }
 
@@ -93,15 +107,6 @@ namespace XMock
         }
 
         #endregion
-
-        public bool TryRemoveCollectionReferences(Guid collectionId)
-        {
-            // if the collection reference does not have any fixtures then remove it
-            var collectionReference = _references[collectionId];
-            if (collectionReference.ClassFixtures.Count == 0 && collectionReference.CollectionFixtures.Count == 0)
-                return _references.Remove(collectionId);
-            return false;
-        }
 
         [DebuggerDisplay("{Usages} usages, {CollectionFixtures.Count} collection fixtures, {ClassFixtures.Count} class fixtures")]
         private class CollectionReference
