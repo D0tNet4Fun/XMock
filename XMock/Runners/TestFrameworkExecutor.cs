@@ -18,7 +18,17 @@ namespace XMock.Runners
             var testAssembly = new TestAssembly(AssemblyInfo, AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
 
             using (var assemblyRunner = new TestAssemblyRunner(testAssembly, testCases, DiagnosticMessageSink, executionMessageSink, executionOptions, new SharedContext()))
-                await assemblyRunner.RunAsync();
+            {
+                try
+                {
+                    await assemblyRunner.RunAsync();
+                }
+                catch (Exception e)
+                {
+                    DiagnosticMessageSink.OnMessage(new DiagnosticMessage($"Assembly runner threw unhandled exception: {e}"));
+                    throw;
+                }
+            }
         }
     }
 }

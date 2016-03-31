@@ -21,7 +21,7 @@ namespace XMock
             IsolateCleanupMethodInfo.Invoke(null, null);
 
         private static Type LoadTypemockType(string typeFullName) =>
-            Type.GetType($"{typeFullName}, Typemock.ArrangeActAssert", throwOnError: true);
+            Type.GetType($"{typeFullName}, Typemock.ArrangeActAssert");
     }
 
     internal enum TypemockDesignMode

@@ -20,6 +20,9 @@ namespace XMock
 
         public TestCollectionCategories Run(CancellationToken cancellationToken)
         {
+            if (TypemockHelper.IsolatedAttributeType == null)
+                throw new InvalidOperationException("Could not found Typemock IsolatedAttribute type. Make sure the test project references Typemock.");
+
             var result = new TestCollectionCategories(_sharedContext);
 
             var collectionComparer = new TestCollectionComparer();
