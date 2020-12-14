@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyFixtureAttribute.cs" />
+    <Compile Include="Discovery\ReflectionUtils.cs" />
     <Compile Include="IAssemblyFixture.cs" />
     <Compile Include="Runners\TestAssemblyRunner.cs" />
     <Compile Include="Runners\TestAssemblyRunner.Events.cs">
