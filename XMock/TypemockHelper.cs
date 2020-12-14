@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
+using Xunit.Abstractions;
 
 namespace XMock
 {
@@ -22,6 +24,18 @@ namespace XMock
 
         private static Type LoadTypemockType(string typeFullName) =>
             Type.GetType($"{typeFullName}, Typemock.ArrangeActAssert");
+
+        public static TypemockDesignMode? GetClassIsolatedDesignMode(this ITypeInfo testClassInfo)
+        {
+            var isolatedAttribute = testClassInfo.GetCustomAttributes(TypemockHelper.IsolatedAttributeType).SingleOrDefault();
+            return isolatedAttribute?.GetNamedArgument<TypemockDesignMode>("Design");
+        }
+
+        public static TypemockDesignMode? GetMethodIsolatedDesignMode(this IMethodInfo testMethodInfo)
+        {
+            var isolatedAttribute = testMethodInfo.GetCustomAttributes(TypemockHelper.IsolatedAttributeType).SingleOrDefault();
+            return isolatedAttribute?.GetNamedArgument<TypemockDesignMode>("Design");
+        }
     }
 
     internal enum TypemockDesignMode

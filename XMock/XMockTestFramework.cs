@@ -15,6 +15,11 @@ namespace XMock
         {
         }
 
+        protected override ITestFrameworkDiscoverer CreateDiscoverer(IAssemblyInfo assemblyInfo)
+        {
+            return new Discovery.TestFrameworkDiscoverer(assemblyInfo, SourceInformationProvider, DiagnosticMessageSink);
+        }
+
         protected override ITestFrameworkExecutor CreateExecutor(AssemblyName assemblyName)
         {
             return new TestFrameworkExecutor(assemblyName, SourceInformationProvider, DiagnosticMessageSink);

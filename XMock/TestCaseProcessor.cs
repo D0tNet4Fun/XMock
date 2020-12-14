@@ -61,11 +61,11 @@ namespace XMock
 
             var testCaseCount = 0;
             // check if the test class is decorated with [Isolated] and get the DesignMode
-            var classDesignMode = GetClassIsolatedDesignMode(testCasesGroupedByClass.Key.Class);
+            var classDesignMode = testCasesGroupedByClass.Key.Class.GetClassIsolatedDesignMode();
             foreach (var testCase in testCasesGroupedByClass)
             {
                 // check if the method is decorated with [Isolated] and get the DesignMode
-                var methodDesignMode = GetMethodIsolatedDesignMode(testCase.Method);
+                var methodDesignMode = testCase.Method.GetMethodIsolatedDesignMode();
 
                 switch (methodDesignMode)
                 {
@@ -100,18 +100,6 @@ namespace XMock
                 throw new InvalidOperationException($"Not all test cases in class \"{testCasesGroupedByClass.Key.Class.Name}\" were sorted");
             }
             return result;
-        }
-
-        private static TypemockDesignMode? GetClassIsolatedDesignMode(ITypeInfo testClassInfo)
-        {
-            var isolatedAttribute = testClassInfo.GetCustomAttributes(TypemockHelper.IsolatedAttributeType).SingleOrDefault();
-            return isolatedAttribute?.GetNamedArgument<TypemockDesignMode>("Design");
-        }
-
-        private static TypemockDesignMode? GetMethodIsolatedDesignMode(IMethodInfo testMethodInfo)
-        {
-            var isolatedAttribute = testMethodInfo.GetCustomAttributes(TypemockHelper.IsolatedAttributeType).SingleOrDefault();
-            return isolatedAttribute?.GetNamedArgument<TypemockDesignMode>("Design");
         }
 
         class SortedTestCases
